@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.borderFilter {
+  border-bottom: 2px solid #d1d5db;
+}
