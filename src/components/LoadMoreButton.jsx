@@ -6,10 +6,10 @@ function LoadMoreButton({
   const isAllLoaded = displayedRestaurants >= listRestaurants.length;
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 flex justify-center items-center py-5">
       <button
         onClick={loadMoreRestaurants}
-        className="btn btn-primary"
+        className="btn w-[10rem] rounded-md btn-outline"
         disabled={isAllLoaded}
       >
         Load More

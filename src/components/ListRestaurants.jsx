@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getRestaurants } from "../features/retaurantsSlice";
 import { useDispatch, useSelector } from "react-redux";
-import getPriceSymbol from "../features/getPriceSymbol";
-import StarRating from "./StarRating";
+
 import LoadMoreButton from "./LoadMoreButton";
+import RestaurantCard from "./RestaurantCard";
+import { sortRestaurants } from "../utils/restaurantUtil";
 
 function ListRestaurants({ category, priceSorting, openNowFilter }) {
   const dispatch = useDispatch();
@@ -43,7 +44,13 @@ function ListRestaurants({ category, priceSorting, openNowFilter }) {
   }, [openNowFilter]);
 
   useEffect(() => {
-    sortRestaurants();
+    const sortedAndFiltered = sortRestaurants(
+      listRestaurants,
+      priceSorting,
+      openNowFilter,
+      displayedRestaurants
+    );
+    setFilteredRestaurants(sortedAndFiltered); // Update state here
   }, [
     listRestaurants,
     priceSorting,
@@ -52,28 +59,6 @@ function ListRestaurants({ category, priceSorting, openNowFilter }) {
     openNowFilter,
     displayedRestaurants,
   ]);
-
-  const sortRestaurants = () => {
-    if (!listRestaurants) {
-      return;
-    }
-
-    const sorted = [...listRestaurants];
-    if (priceSorting === "highestToLowest") {
-      sorted.sort((a, b) => b.price_range.localeCompare(a.price_range));
-    } else if (priceSorting === "lowestToHighest") {
-      sorted.sort((a, b) => a.price_range.localeCompare(b.price_range));
-    }
-
-    const filtered = sorted.filter((resto) => {
-      return openNowFilter
-        ? isRestaurantOpenNow(resto.operational_hours)
-        : true;
-    });
-
-    const slicedRestaurants = filtered.slice(0, displayedRestaurants);
-    setFilteredRestaurants(slicedRestaurants);
-  };
 
   const loadMoreRestaurants = () => {
     setDisplayedRestaurants(displayedRestaurants + restaurantsToLoad);
@@ -93,45 +78,13 @@ function ListRestaurants({ category, priceSorting, openNowFilter }) {
   return (
     <div className="grid grid-rows-1">
       <h3 className="lg:text-2xl">All Restaurants</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
         {filteredRestaurants.map((resto) => (
-          <div
+          <RestaurantCard
+            resto={resto}
             key={resto.id_restaurant}
-            className="card card-compact w-[13rem] md:w-[20rem] bg-base-100 shadow-md rounded-sm pt-5"
-          >
-            <figure>
-              <img
-                src={`${imagePath}/${resto.image_path}`}
-                alt="Restaurants"
-                className="w-full h-[12rem]"
-              />
-            </figure>
-            <div className="card-body">
-              <h2 className="card-title">{resto.name}</h2>
-              <StarRating rating={resto.rating} />
-              <div>
-                {resto.category_name}-{getPriceSymbol(resto.price_range)}
-              </div>
-
-              {isRestaurantOpenNow(resto.operational_hours) ? (
-                <div className="flex flex-row gap-2 self-end">
-                  <div className="badge badge-info"></div>
-                  <p className="text-md">OPEN</p>
-                </div>
-              ) : (
-                <div className="flex flex-row gap-2 self-end">
-                  <div className="badge badge-error"></div>
-                  <p>CLOSED</p>
-                </div>
-              )}
-              <br />
-              <div className="card-actions justify-center">
-                <button className="uppercase btn bg-blue-950 w-full rounded-sm bottom-0 absolute text-white/80 hover:bg-blue-950/80 hover:text-white/90">
-                  Learn More
-                </button>
-              </div>
-            </div>
-          </div>
+            isOpenNow={isRestaurantOpenNow(resto.operational_hours)}
+          />
         ))}
       </div>
       {displayedRestaurants < listRestaurants.length && (

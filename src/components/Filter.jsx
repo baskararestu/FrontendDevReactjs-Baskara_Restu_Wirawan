@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategories } from "../features/categoriesSlice";
 
-function Filter({ setCategory, setPriceSorting, setOpenNowFilter }) {
+function Filter({ setCategory, category, setPriceSorting, setOpenNowFilter }) {
   const dispatch = useDispatch();
   const categories = useSelector((state) => state.categories.categories);
   const [selectedPriceSorting, setSelectedPriceSorting] = useState("");
@@ -30,7 +30,7 @@ function Filter({ setCategory, setPriceSorting, setOpenNowFilter }) {
     setOpenNowFilter(false);
   };
 
-  const isClearAllDisabled = !selectedPriceSorting && !openNow;
+  const isClearAllDisabled = !selectedPriceSorting && !openNow && !category;
   return (
     <div className="flex flex-col lg:flex-row gap-5 text-lg lg:items-center">
       <div className="font-medium">
@@ -60,6 +60,7 @@ function Filter({ setCategory, setPriceSorting, setOpenNowFilter }) {
         <select
           className="bg-transparent w-[15rem]"
           onChange={(e) => setCategory(e.target.value)}
+          value={category || ""}
         >
           <option value="">Categories</option>
           {categories.map((cat) => (
@@ -70,7 +71,7 @@ function Filter({ setCategory, setPriceSorting, setOpenNowFilter }) {
         </select>
       </div>
       <button
-        className="uppercase md:right-36 md:absolute btn rounded-md disabled:bg-opacity-[0.02] w-32 btn-sm"
+        className="uppercase  btn rounded-md disabled:bg-opacity-[0.02] w-32 btn-sm"
         disabled={isClearAllDisabled}
         onClick={handleClearAll}
       >
