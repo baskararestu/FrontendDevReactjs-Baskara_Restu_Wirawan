@@ -18,13 +18,13 @@ export default {
 
           "base-100": "#f6f7f8",
 
-          info: "#a6c8ed",
+          info: "#3abff8",
 
           success: "#21d4a7",
 
           warning: "#a9870f",
 
-          error: "#df3067",
+          error: "#f43f5e",
         },
       },
     ],

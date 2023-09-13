@@ -1,7 +1,7 @@
 import React from "react";
 import Filter from "./Filter";
 
-function Headers() {
+function Headers({ setCategory, setPriceSorting, setOpenNowFilter }) {
   return (
     <div className="flex flex-col gap-3 w-full">
       <h1 className="text-xl lg:text-3xl">Restaurants</h1>
@@ -13,7 +13,11 @@ function Headers() {
       </p>
       <div className="flex flex-col">
         <div className="divider"></div>
-        <Filter />
+        <Filter
+          setCategory={setCategory}
+          setPriceSorting={setPriceSorting}
+          setOpenNowFilter={setOpenNowFilter}
+        />
         <div className="divider"></div>
       </div>
     </div>
