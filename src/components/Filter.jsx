@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { getRestaurants } from "../features/retaurantsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { getCategories } from "../features/categoriesSlice";
 

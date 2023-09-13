@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { getRestaurants } from "../features/retaurantsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import getPriceSymbol from "../features/getPriceSymbol";
+import StarRating from "./StarRating";
+import LoadMoreButton from "./LoadMoreButton";
 
 function ListRestaurants({ category, priceSorting, openNowFilter }) {
   const dispatch = useDispatch();
@@ -12,6 +14,8 @@ function ListRestaurants({ category, priceSorting, openNowFilter }) {
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const currentDay = "Monday"; // Example day
   const currentTime = "10:30"; // Example time
+  const [displayedRestaurants, setDisplayedRestaurants] = useState(8); // Number of restaurants to display initially
+  const restaurantsToLoad = 8;
 
   const isRestaurantOpenNow = (operationalHours) => {
     if (!operationalHours) {
@@ -32,8 +36,22 @@ function ListRestaurants({ category, priceSorting, openNowFilter }) {
   }, [dispatch, category]);
 
   useEffect(() => {
+    // When openNowFilter changes from true to false, reset displayedRestaurants to 8
+    if (!openNowFilter) {
+      setDisplayedRestaurants(8);
+    }
+  }, [openNowFilter]);
+
+  useEffect(() => {
     sortRestaurants();
-  }, [listRestaurants, priceSorting, currentDay, currentTime, openNowFilter]);
+  }, [
+    listRestaurants,
+    priceSorting,
+    currentDay,
+    currentTime,
+    openNowFilter,
+    displayedRestaurants,
+  ]);
 
   const sortRestaurants = () => {
     if (!listRestaurants) {
@@ -53,7 +71,12 @@ function ListRestaurants({ category, priceSorting, openNowFilter }) {
         : true;
     });
 
-    setFilteredRestaurants(filtered);
+    const slicedRestaurants = filtered.slice(0, displayedRestaurants);
+    setFilteredRestaurants(slicedRestaurants);
+  };
+
+  const loadMoreRestaurants = () => {
+    setDisplayedRestaurants(displayedRestaurants + restaurantsToLoad);
   };
 
   if (!listRestaurants) {
@@ -85,7 +108,7 @@ function ListRestaurants({ category, priceSorting, openNowFilter }) {
             </figure>
             <div className="card-body">
               <h2 className="card-title">{resto.name}</h2>
-              <div>{resto.rating}</div>
+              <StarRating rating={resto.rating} />
               <div>
                 {resto.category_name}-{getPriceSymbol(resto.price_range)}
               </div>
@@ -111,6 +134,13 @@ function ListRestaurants({ category, priceSorting, openNowFilter }) {
           </div>
         ))}
       </div>
+      {displayedRestaurants < listRestaurants.length && (
+        <LoadMoreButton
+          displayedRestaurants={displayedRestaurants}
+          listRestaurants={listRestaurants}
+          loadMoreRestaurants={loadMoreRestaurants}
+        />
+      )}
     </div>
   );
 }
