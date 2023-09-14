@@ -27,7 +27,7 @@ function RestaurantCard({ resto, isOpenNow }) {
           </div>
           {isOpenNow ? <BadgeOpen /> : <BadgeClosed />}
         </div>
-        <LearnMoreButton />
+        <LearnMoreButton restaurantName={resto.name} restaurantData={resto} />
       </div>
     </div>
   );

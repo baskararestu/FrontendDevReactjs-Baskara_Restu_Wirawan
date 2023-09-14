@@ -3,17 +3,14 @@ import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 
 function StarRating({ rating }) {
   const stars = [];
-  const roundedRating = Math.round(rating * 2) / 2; // Round the rating to the nearest half-star
+  const roundedRating = Math.round(rating * 2) / 2;
 
-  // Fill in full stars
   for (let i = 1; i <= 5; i++) {
     if (i <= roundedRating) {
       stars.push(<FaStar key={i} />);
     } else if (i === Math.ceil(roundedRating) && roundedRating % 1 !== 0) {
-      // Add half star if applicable
       stars.push(<FaStarHalfAlt key={i} />);
     } else {
-      // Add empty star
       stars.push(<FaStar key={i} className="text-gray-300" />);
     }
   }
