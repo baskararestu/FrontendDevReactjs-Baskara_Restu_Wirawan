@@ -18,7 +18,7 @@ export default categoriesSlice.reducer;
 
 export const getCategories = () => async (dispatch) => {
   try {
-    let apiUrl = "http://localhost:8000/api/categories";
+    let apiUrl = `${import.meta.env.VITE_BASE_URL}categories`;
 
     const response = await axios.get(apiUrl);
     dispatch(setCategories(response.data));
